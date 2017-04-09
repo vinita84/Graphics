@@ -1,0 +1,2 @@
+B581 / Spring 2017	Assignment  02	    Feb 24,2017		Vinita Boolchandani		vinitab
+This project draws Polylines using Swift and GLSL in Xcode. It has line and vertex proximity testing to dynamically move the vertices or edges of Polyline.
