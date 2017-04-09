@@ -1,2 +1,2 @@
 # Graphics
-My small steps towards Graphics
+My small steps towards Computer Graphics
