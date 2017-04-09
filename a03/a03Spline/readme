@@ -1,0 +1,2 @@
+This Xcode project draws a control point with each touch event. As soon as there are 3n+1 ccontrol points, it draws n Bezier Splines. 
+It also the point proximity test, so if the touch is in proximity of an existing control point, it grabs (and moves) tha control point. If not, it will add a new control point.
