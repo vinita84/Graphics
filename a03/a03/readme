@@ -1,0 +1,1 @@
+This project adds a new vertex with each touch and hence draws a polyline. Additionally it translates the entire Polyline when its centroid is moved.
