@@ -1,2 +1,0 @@
-This Xcode project draws a cube in 3D and the standard x,y,z axies. And touch moved event in x,y plane will cause the cube to rotate along an axis that is orthogonal to the touch moved direction. 
-It is an implementation of the Rolling Ball Algorithm.

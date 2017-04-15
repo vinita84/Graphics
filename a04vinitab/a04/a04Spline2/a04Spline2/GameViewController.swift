@@ -26,7 +26,7 @@ var myVertexData: [GLfloat] = [
     
 ]
 
-var gControlPoints: [GLfloat] = []
+var gControlPoints: [GLfloat] = [ ]
 var gfirstDPoints: [GLfloat] = []
 
 
@@ -55,9 +55,10 @@ class GameViewController: GLKViewController {
     var myWidthUniform: GLint = 0
     var myHeightUniform: GLint = 0
     var myColorUniform: GLint = 0
+    var myPrimitiveTypeUniform: GLint = 0
     
     var myControlPointsUniform: GLint = 0
-    
+    var mySplineNumberUniform: GLint = 0
     var myVertexArray: GLuint = 0
     var myVertexBuffer: GLuint = 0
     
@@ -84,6 +85,8 @@ class GameViewController: GLKViewController {
     var highlightPoint = -1
     //var highlightLine = -1
     var grabLine = 0
+    
+    
     
     // ------------------------------------------------------------------------
     deinit {
@@ -363,15 +366,8 @@ class GameViewController: GLKViewController {
         
         
         
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), myVertexBuffer)
-        // define where the vertex buffer is going to find its data:
-        glBufferData(GLenum(GL_ARRAY_BUFFER),
-                     GLsizeiptr(MemoryLayout<GLfloat>.size * myVertexData.count),
-                     &myVertexData,
-                     GLenum(GL_STATIC_DRAW))
-        
-        // enable which kind of attributes the buffer data is going to use:
-        glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
+                // enable which kind of attributes the buffer data is going to use:
+       
         
         // now call glVertexAttribPointer() to specify the location and data format
         //   of the array of generic vertex attributes at index,
@@ -381,58 +377,59 @@ class GameViewController: GLKViewController {
         //   _ type: GLenum, _ normalized: GLboolean,
         //   _ stride: GLsizei, _ ptr: UnsafePointer<Void>)
         // see https://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml
-        glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue),
-                              2, GLenum(GL_FLOAT), GLboolean(GL_FALSE),
-                              0, obtainUnsafePointer(0) )
+        
         
         // bind the vertex array to draw:
-        glBindVertexArray(myVertexArray)
         
+       glBindBuffer(GLenum(GL_ARRAY_BUFFER), myVertexBuffer)
+        glBindVertexArray(myVertexArray)
         //DRAWING SPLINE
         glLineWidth(3.0)
-        glPointSize(1.0)
-       
-        
-        
-        
-        
-        
-        if touchCount>=1
+        //glPointSize(1.0)
+       if touchCount>=1
         {
-            var i = 0
-            var j = 0.0
-            myVertexData.removeAll()
-            while j<=1
-            {
-                myVertexData.insert(GLfloat(j), at: i)
-                j = j+0.01
-                i = i+1
-                myVertexData.insert(GLfloat(0), at: i)
-                i=i+1
-            }
-            glUniform4f(self.myColorUniform,
-                        gColorData[1][0],
-                        gColorData[1][1],
-                        gColorData[1][2],
-                        gColorData[1][3])
-            i = 0
-            while i < no_spline_seg
-            {
-                glUniform2fv(self.myControlPointsUniform,  4, &gControlPoints[i])
-                //let interpolateVertexCount = (myVertexData.count+1)/2//((touchCount-1)/2)*100 //
-                glDrawArrays( GLenum(GL_LINE_STRIP), 0, Int32(myVertexData.count/2))
-                i=i+6
-            }
             
-        }
-        
-        
-        
-        
-        
-        
+            if no_spline_seg>=1
+            {
+                var j = 1
+                // define where the vertex buffer is going to find its data:
+                glBufferData(GLenum(GL_ARRAY_BUFFER),
+                             GLsizeiptr(MemoryLayout<GLfloat>.size * myVertexData.count),
+                             &myVertexData,
+                             GLenum(GL_STATIC_DRAW))
+                glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
+                glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue),
+                                      2, GLenum(GL_FLOAT), GLboolean(GL_FALSE),
+                                      0, obtainUnsafePointer(0) )
+                
+                //glBindVertexArray(myVertexArray)
+                
+                glUniform1i(myPrimitiveTypeUniform, GLint(3))
+                glUniform4f(self.myColorUniform,
+                            gColorData[0][0],
+                            gColorData[0][1],
+                            gColorData[0][2],
+                            gColorData[0][3])
+                glUniform1fv(self.myControlPointsUniform, GLsizei(gControlPoints.count), gControlPoints)
+
+                var i = 0
+                while j <= no_spline_seg //gControlPoints.count-2
+                {
+                    //glUniform1fv(self.myControlPointsUniform, GLsizei(8), gControlPoints)
+                    glUniform1i(self.mySplineNumberUniform, GLint(j))
+                    //let interpolateVertexCount = (myVertexData.count)/2    //((touchCount-1)/2)*100
+                    //glDrawArrays( GLenum(GL_LINE_STRIP), 0, Int32(myVertexData.count/2) )
+                    glDrawArrays( GLenum(GL_LINE_STRIP), 0, 100 )
+                    //i=i+6
+                    j=j+1
+                }
+                //glDrawArrays( GLenum(GL_LINE_STRIP), 0, Int32(100.0) )
+            
+            }
         
         //DRAWING POINTS
+        glPointSize(1.0)
+        //glUniform1i(myPrimitiveTypeUniform, GL_POINTS)
         glUniform4f(self.myColorUniform,
                     gColorData[2][0],
                     gColorData[2][1],
@@ -440,13 +437,20 @@ class GameViewController: GLKViewController {
                     gColorData[2][3])
         glEnable(GLenum(GL_POINT_SMOOTH))
         glPointSize(20.0)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), myVertexBuffer)
+        //glBindBuffer(GLenum(GL_ARRAY_BUFFER), myVertexBuffer)
         glBufferData(GLenum(GL_ARRAY_BUFFER),
                      GLsizeiptr(MemoryLayout<GLfloat>.size * gControlPoints.count),
                      &gControlPoints,
                      GLenum(GL_STATIC_DRAW))
+        glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
+        glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue),
+                                  2, GLenum(GL_FLOAT), GLboolean(GL_FALSE),
+                                  0, obtainUnsafePointer(0) )
+        glUniform1i(myPrimitiveTypeUniform, 0)
+        //let point_count = gControlPoints.count/2
+        //glUniform1i(myGLPrimitiveType, myG)
         glDrawArrays( GLenum(GL_POINTS), 0, Int32(gControlPoints.count/2) )
-      
+        glDrawArrays( GLenum(GL_LINE_STRIP), 0, Int32(gControlPoints.count/2) )
         //HIGHLIGHTING OR GRABBING
         glUniform4f(self.myColorUniform,
                     1,
@@ -470,6 +474,7 @@ class GameViewController: GLKViewController {
                      &gfirstDPoints,
                      GLenum(GL_STATIC_DRAW))
         glDrawArrays( GLenum(GL_LINE_STRIP), 0, Int32(gfirstDPoints.count/2) )
+        }
         
         // now "break" the vertex array binding:
         glBindVertexArray(0)
@@ -504,7 +509,24 @@ class GameViewController: GLKViewController {
             self.myTouchXold = self.myTouchXcurrent
             self.myTouchYold = self.myTouchYcurrent
             
-            
+            if touchCount == -1
+            {
+                var i = 0
+                var t = 0.00
+                myVertexData.removeAll()
+                while t<=1
+                {
+                    myVertexData.insert(GLfloat(t), at: i)
+                    NSLog("data: \(myVertexData[i])")
+                    t = t+0.01
+                    i = i+1
+                    myVertexData.insert(GLfloat(t), at: i)
+                    NSLog("data: \(myVertexData[i])")
+                    i=i+1
+                    //t = t+0.01
+                }
+
+            }
             if touchCount >= 1
             {
                 pointToPointDist(x1: myTouchXbegin, y1: myTouchYbegin)
@@ -575,7 +597,7 @@ class GameViewController: GLKViewController {
             if touchCount>63
             {
                 gControlPoints.removeAll()
-                myVertexData.removeAll()
+                //myVertexData.removeAll()
                 touchCount = -1
                 no_spline_seg=0
                 
@@ -715,7 +737,8 @@ class GameViewController: GLKViewController {
         self.myHeightUniform = glGetUniformLocation(myGLESProgram, "u_Height")
         self.myColorUniform = glGetUniformLocation(myGLESProgram, "u_Color")
         self.myControlPointsUniform = glGetUniformLocation(myGLESProgram, "u_ControlPoints")
-        
+        self.myPrimitiveTypeUniform = glGetUniformLocation(myGLESProgram, "u_PrimitiveType")
+        self.mySplineNumberUniform = glGetUniformLocation(myGLESProgram, "u_SplineNum")
         // Release vertex and fragment shaders.
         if vertShader != 0 {
             glDetachShader(myGLESProgram, vertShader)

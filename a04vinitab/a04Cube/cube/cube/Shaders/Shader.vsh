@@ -82,7 +82,7 @@ void main() {
     
     //mat4 rotationMatrix = myRotate2D(40.0);
     
-    mat4 modelViewMatrix = myTranslate(u_DeltaX, u_DeltaY, -1.05);
+    mat4 modelViewMatrix = myTranslate(u_DeltaX, u_DeltaY, -5.0);
     
     gl_Position = projectionMatrix * modelViewMatrix * a_Position;
     

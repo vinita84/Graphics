@@ -87,8 +87,8 @@ class GameViewController: GLKViewController {
     var myTouchPhase: UITouchPhase? = nil
     var myFoV:GLfloat = 90.0
     var myAspect:GLfloat = 1.0
-    var myNear:GLfloat = 1.0
-    var myFar:GLfloat = 21.0
+    var myNear:GLfloat = 0.1
+    var myFar:GLfloat = 20.1
     var myDelta_x:GLfloat = 0.0
     var myDelta_y:GLfloat = 0.0
     

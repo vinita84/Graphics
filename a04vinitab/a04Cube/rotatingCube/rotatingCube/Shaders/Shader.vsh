@@ -38,7 +38,7 @@ mat4 myTranslate(float pTX, float pTY, float pTZ) {
 }
 
 mat4 myRotate2D(float x, float y, float z) {
-    float R = 1.732/2.0;
+    float R = 1.0;
     float dr = sqrt(x * x + y * y);
     float A = dr/R;
     float nx = -y;
@@ -50,20 +50,21 @@ mat4 myRotate2D(float x, float y, float z) {
     float s = sin(A);
     mat4 lrotateMatrix = mat4(0.0);
     float d = 1.0 - c;
-    lrotateMatrix[0][0] =  x * x * d + c;
-    lrotateMatrix[1][0] =  x * y * d - z * s;
-    lrotateMatrix[2][0] =  x*z*d+y*s;
-    lrotateMatrix[0][1] =  y*x*d+z*s;
-    lrotateMatrix[1][1] =  y*y*d+c;
-    lrotateMatrix[2][1] =  y*z*d - x*s;
-    lrotateMatrix[0][2] =  x*z*d - y*s;
-    lrotateMatrix[1][2] =  y*z*d+x*s;
-    lrotateMatrix[2][2] =  z*z*d+c;
-    return lrotateMatrix;
-    /*return mat4( x*x*(1−c)+c,    x*y*(1−c)−z*s,         x*z*(1−c)+y*s,      0.0,
-                y*x*(1−c)+z*s,         y*y*(1−c)+c,         y*z*(1−c)−x*s,      0.0,
-                x*z*(1−c)−y*s,            y*z*(1−c)+x*s,         z*z*(1−c)+c,      0.0,
-                0.0,            0.0,         0.0,      1.0   );*/
+//    lrotateMatrix[0][0] =  x * x * d + c;
+//    lrotateMatrix[1][0] =  x * y * d - z * s;
+//    lrotateMatrix[2][0] =  x*z*d+y*s;
+//    lrotateMatrix[0][1] =  y*x*d+z*s;
+//    lrotateMatrix[1][1] =  y*y*d+c;
+//    lrotateMatrix[2][1] =  y*z*d - x*s;
+//    lrotateMatrix[0][2] =  x*z*d - y*s;
+//    lrotateMatrix[1][2] =  y*z*d+x*s;
+//    lrotateMatrix[2][2] =  z*z*d+c;
+//    return lrotateMatrix;
+//    return mat4(1.0);
+        return mat4( x*x*(1.0-c)+c,    x*y*(1.0-c)+z*s,         x*z*(1.0-c)-y*s,      0.0,
+                y*x*(1.0-c)-z*s,         y*y*(1.0-c)+c,         y*z*(1.0-c)+x*s,      0.0,
+                x*z*(1.0-c)+y*s,            y*z*(1.0-c)-x*s,         z*z*(1.0-c)+c,      0.0,
+                0.0,            0.0,         0.0,      1.0   );
 }
 
 // function that computes a 3D perspective transformation matrix:
@@ -106,7 +107,7 @@ void main() {
     
     mat4 rotationMatrix = myRotate2D(u_DeltaX, u_DeltaY, 0.0);
     
-    mat4 modelViewMatrix = myTranslate(0.0, 0.0, -1.05);
+    mat4 modelViewMatrix = myTranslate(0.0, 0.0, -5.0) * rotationMatrix;
    /* a_Position.x = 0.0;
     a_Position.y = 0.0;
     a_Position.z = 0.0;*/

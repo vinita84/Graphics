@@ -1,2 +1,0 @@
-This Xcode project functions in the same as a03Spline. It draws a Bezier Spline adding control points with each touch event.
-The difference is that it has moved the interpolation functions to the GPU side from CPU side in a03Spline.

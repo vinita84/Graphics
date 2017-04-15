@@ -50,6 +50,8 @@ enum G_LIT {
 }
 
 
+
+
 class GameViewController: GLKViewController {
     
     var myGLESProgram: GLuint = 0
@@ -85,13 +87,14 @@ class GameViewController: GLKViewController {
     var myTouchXold: GLfloat = -1.0
     var myTouchYold: GLfloat = -1.0
     var myTouchPhase: UITouchPhase? = nil
-    var myFoV:GLfloat = 90.0
+    var myFoV:GLfloat = 40.0
     var myAspect:GLfloat = 1.0
-    var myNear:GLfloat = 1.0
-    var myFar:GLfloat = 21.0
-    var myDelta_x:GLfloat = 0.0
-    var myDelta_y:GLfloat = 0.0
-    
+    var myNear:GLfloat = 0.01
+    var myFar:GLfloat = 21.01
+    var myDelta_x:GLfloat = 0.001
+    var myDelta_y:GLfloat = 0.001
+    var myfirstTouchX:GLfloat = 0.0
+    var myfirstTouchY:GLfloat = 0.0
     // polygon build data:
     var myEnteredVertices = 0
     var myLitType = G_LIT.NONLIT
@@ -300,8 +303,8 @@ class GameViewController: GLKViewController {
         glUniform1f(self.myAspectUniform,GLfloat(myAspect))
         glUniform1f(self.myNearUniform,GLfloat(myNear))
         glUniform1f(self.myFarUniform,GLfloat(myFar))
-        glUniform1f(self.myDeltaXUniform, myDelta_x)
-        glUniform1f(self.myDeltaYUniform, myDelta_y)
+        glUniform1f(self.myDeltaXUniform, GLfloat(myDelta_x))
+        glUniform1f(self.myDeltaYUniform, GLfloat(myDelta_y))
         
         glLineWidth(2.0)
         
@@ -552,6 +555,9 @@ class GameViewController: GLKViewController {
             self.myTouchXold = self.myTouchXcurrent
             self.myTouchYold = self.myTouchYcurrent
             
+            
+            myfirstTouchX = self.myTouchXbegin
+            myfirstTouchY = self.myTouchYbegin
             // we are in the "we've just began" phase of the touch event sequence:
             self.myTouchPhase = UITouchPhase.began
             
@@ -586,9 +592,9 @@ class GameViewController: GLKViewController {
             
             // we are in the "something has moved" phase of the touch event sequence:
             self.myTouchPhase = UITouchPhase.moved
-            var ratio = fabsf(Float(self.view.bounds.size.width / self.view.bounds.size.height))/10
-            myDelta_x = (self.myTouchXcurrent - self.myTouchXold) * ratio + myDelta_x
-            myDelta_y = (self.myTouchYcurrent - self.myTouchYold) * ratio + myDelta_y
+            let ratio = fabsf(Float(self.view.bounds.size.width/self.view.bounds.size.height)) * 50
+            myDelta_x = (self.myTouchXcurrent - myfirstTouchX) / ratio
+            myDelta_y = (self.myTouchYcurrent - myfirstTouchY) / ratio
             
             
             // SOLUTION task C : move vertex or line segment:
@@ -632,6 +638,12 @@ class GameViewController: GLKViewController {
             self.myTouchXcurrent = GLfloat(firstTouchPoint.x)
             self.myTouchYcurrent = GLfloat(self.myViewPortHeight) - GLfloat(firstTouchPoint.y - 1)
             self.myTouchPhase = UITouchPhase.ended
+            
+            //resetting the rotation
+            myDelta_x = 0.001
+            myDelta_y = 0.001
+            myfirstTouchX = 0.0
+            myfirstTouchY = 0.0
             
             // SOLUTION: stop highlighting when touch event is off:
             self.myLitType = G_LIT.NONLIT
