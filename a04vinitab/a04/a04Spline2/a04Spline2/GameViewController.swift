@@ -450,7 +450,7 @@ class GameViewController: GLKViewController {
         //let point_count = gControlPoints.count/2
         //glUniform1i(myGLPrimitiveType, myG)
         glDrawArrays( GLenum(GL_POINTS), 0, Int32(gControlPoints.count/2) )
-        glDrawArrays( GLenum(GL_LINE_STRIP), 0, Int32(gControlPoints.count/2) )
+        
         //HIGHLIGHTING OR GRABBING
         glUniform4f(self.myColorUniform,
                     1,
