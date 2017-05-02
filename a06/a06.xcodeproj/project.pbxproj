@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		17242E671EB8E408007A1F04 /* L200-OBJ.obj in Resources */ = {isa = PBXBuildFile; fileRef = 17242E651EB8E408007A1F04 /* L200-OBJ.obj */; };
+		17242E681EB8E409007A1F04 /* truck_color-blue.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 17242E661EB8E408007A1F04 /* truck_color-blue.jpg */; };
+		17242E6C1EB91128007A1F04 /* Futuristic_Car_2.1_obj.obj in Resources */ = {isa = PBXBuildFile; fileRef = 17242E6B1EB91128007A1F04 /* Futuristic_Car_2.1_obj.obj */; };
+		17242E6E1EB91143007A1F04 /* Futuristic_Car_C.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 17242E6D1EB91143007A1F04 /* Futuristic_Car_C.jpg */; };
 		17BB9E481EB517DE0059A9CD /* Avent.obj in Resources */ = {isa = PBXBuildFile; fileRef = 17BB9E471EB517DE0059A9CD /* Avent.obj */; };
 		17C60FCF1EB268D700EAC3E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C60FCE1EB268D700EAC3E0 /* AppDelegate.swift */; };
 		17C60FD11EB268D700EAC3E0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 17C60FD01EB268D700EAC3E0 /* Shader.fsh */; };
@@ -19,6 +23,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17242E651EB8E408007A1F04 /* L200-OBJ.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "L200-OBJ.obj"; path = "../../../../../Downloads/2008-L200-Pickup/L200-OBJ.obj"; sourceTree = "<group>"; };
+		17242E661EB8E408007A1F04 /* truck_color-blue.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "truck_color-blue.jpg"; path = "../../../../../Downloads/2008-L200-Pickup/truck_color-blue.jpg"; sourceTree = "<group>"; };
+		17242E6B1EB91128007A1F04 /* Futuristic_Car_2.1_obj.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Futuristic_Car_2.1_obj.obj; path = ../../../../../Downloads/3dexport_futuristic_car_20_cgtrader_obj_1460151699/Futuristic_Car_2.1_obj.obj; sourceTree = "<group>"; };
+		17242E6D1EB91143007A1F04 /* Futuristic_Car_C.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Futuristic_Car_C.jpg; path = ../../../../../Downloads/3dexport_futuristic_car_20_cgtrader_obj_1460151699/textures/Futuristic_Car_C.jpg; sourceTree = "<group>"; };
 		17BB9E471EB517DE0059A9CD /* Avent.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Avent.obj; sourceTree = "<group>"; };
 		17C60FCB1EB268D700EAC3E0 /* a06.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = a06.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17C60FCE1EB268D700EAC3E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -62,12 +70,16 @@
 		17C60FCD1EB268D700EAC3E0 /* a06 */ = {
 			isa = PBXGroup;
 			children = (
+				17242E651EB8E408007A1F04 /* L200-OBJ.obj */,
+				17242E661EB8E408007A1F04 /* truck_color-blue.jpg */,
 				17BB9E471EB517DE0059A9CD /* Avent.obj */,
 				17F23F421EB3EE6100D14557 /* Car.obj */,
 				17C60FCE1EB268D700EAC3E0 /* AppDelegate.swift */,
 				17C60FD01EB268D700EAC3E0 /* Shader.fsh */,
 				17C60FD21EB268D700EAC3E0 /* Shader.vsh */,
 				17C60FD41EB268D700EAC3E0 /* GameViewController.swift */,
+				17242E6D1EB91143007A1F04 /* Futuristic_Car_C.jpg */,
+				17242E6B1EB91128007A1F04 /* Futuristic_Car_2.1_obj.obj */,
 				17C60FD61EB268D700EAC3E0 /* Main.storyboard */,
 				17C60FD91EB268D700EAC3E0 /* Assets.xcassets */,
 				17C60FDB1EB268D700EAC3E0 /* LaunchScreen.storyboard */,
@@ -136,10 +148,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17242E6C1EB91128007A1F04 /* Futuristic_Car_2.1_obj.obj in Resources */,
 				17C60FD81EB268D700EAC3E0 /* Main.storyboard in Resources */,
 				17F23F431EB3EE6100D14557 /* Car.obj in Resources */,
 				17C60FD31EB268D700EAC3E0 /* Shader.vsh in Resources */,
+				17242E671EB8E408007A1F04 /* L200-OBJ.obj in Resources */,
+				17242E6E1EB91143007A1F04 /* Futuristic_Car_C.jpg in Resources */,
 				17C60FDA1EB268D700EAC3E0 /* Assets.xcassets in Resources */,
+				17242E681EB8E409007A1F04 /* truck_color-blue.jpg in Resources */,
 				17C60FDD1EB268D700EAC3E0 /* LaunchScreen.storyboard in Resources */,
 				17C60FD11EB268D700EAC3E0 /* Shader.fsh in Resources */,
 				17BB9E481EB517DE0059A9CD /* Avent.obj in Resources */,

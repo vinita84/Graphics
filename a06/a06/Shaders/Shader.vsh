@@ -15,10 +15,10 @@ uniform float u_Aspect;
 uniform float u_Near;
 uniform float u_Far;
 varying lowp vec4 colorVarying;
-attribute vec2 texture;
+attribute vec2 texCoord;
 attribute vec4 a_Position;
 attribute vec3 normal;
-varying lowp vec4 text;
+varying lowp vec2 texCoordVarying;
 
 uniform mat4 modelViewProjectionMatrix;
 uniform mat3 normalMatrix;
@@ -66,35 +66,35 @@ mat4 myTranslate(float pTX, float pTY, float pTZ) {
 
 
 // define a varying variable:
-varying vec2 var_Position;
-varying vec2 tex_coord;
+//varying vec2 var_Position;
+//varying vec2 tex_coord;
 void main() {
     
-    //mat4 projectionMatrix = myOrtho2D(0.0, u_Width, 0.0, u_Height);
-    gl_PointSize = 10.0;
+    //vec3 MaterialDiffuseColor = vec3(0.00, 0.00, 1.00);
+    /*vec3 Ka = vec3(0.00, 0.00, 0.00);
+    //Tf 1.00 1.00 1.00
+    float  Ni 1.00
+    vec3 Ks = vec3(0.00, 0.00, 0.00);*/
+    vec3 n = normalize(normal );
+    vec3 lightPosition1 = vec3(0.0, 1.0, 1.0);
+    vec3 l = normalize( lightPosition1 );
     vec3 eyeNormal = normalize(normalMatrix * normal);
-    vec3 lightPosition = vec3(1.0, 1.0, 1.0);
-    vec4 diffuseColor = vec4(0.5, 1.0, 1.0, 1.0);
+    vec3 LightColor = vec3(1.0, 1.0, 1.0);
+    vec3 LightPower = vec3(1.0,1.0,1.0);
+    float cosTheta = max(0.0, dot(n, l));
     
-    float nDotVP = max(0.0, dot(eyeNormal, normalize(lightPosition)));
+    vec3 MaterialAmbientColor = vec3(1.0,1.0,1.0);
+    vec3 MaterialDiffuseColor = vec3(0.1,0.1,1.0);
+    vec3 MaterialSpecularColor = vec3(1.0, 1.0, 1.0);
+    //vec3 E = normalize(eyeNormal);
+    vec3 R = reflect(-l,n);
+    float cosAlpha = max(dot(eyeNormal,R ), 0.0 );
     
-    colorVarying = diffuseColor * nDotVP;
-    tex_coord = texture;//gl_MultiTexCoord0.st;
-    //colorVarying = color;
-    vec4 a = vec4(1.0, 3.0, 0.0, 1.0);
-    //a.w = 1.0;
-    //text = texture;
-    mat4 modelViewMatrix = myTranslate(0.0, 0.0, -5.0);
+    colorVarying.xyz = MaterialAmbientColor + MaterialDiffuseColor * LightColor * LightPower * cosTheta + MaterialSpecularColor * LightColor * LightPower * cosAlpha;
     
-    //mat4 viewMatrix = myTranslate(0.0, 0.0, -5.0);
-    
+        
+    texCoordVarying = texCoord;
     mat4 projectionMatrix = myGLUPerspective(u_FoV, u_Aspect, u_Near, u_Far);
-    
-    //gl_Position = projectionMatrix * u_Mat4View * u_Mat4 * a_Position;
     gl_Position = projectionMatrix * u_Mat4View * u_Mat4 * a_Position;
-    //gl_MultiTexCoord0 = texture;
-    // the value for var_Position is set in this vertex shader,
-    // then it goes through the interpolator before being
-    // received (interpolated!) by a fragment shader:
-    var_Position = gl_Position.xy;
+    //var_Position = gl_Position.xy;
 }

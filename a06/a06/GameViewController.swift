@@ -79,49 +79,7 @@ var vertices = [GLfloat]()
 var normals = [GLfloat]()
 var faces = [GLint]()
 var texture = [GLfloat]()
-var drawvertices: [GLfloat] = [ /*0.5, -0.5, -0.5,        1.0, 0.0, 0.0,
-                                0.5, 0.5, -0.5,         1.0, 0.0, 0.0,         
-                                0.5, -0.5, 0.5,         1.0, 0.0, 0.0,         
-                                0.5, -0.5, 0.5,         1.0, 0.0, 0.0,         
-                                0.5, 0.5, -0.5,         1.0, 0.0, 0.0,         
-                                0.5, 0.5, 0.5,          1.0, 0.0, 0.0,         
-                                
-                                0.5, 0.5, -0.5,         0.0, 1.0, 0.0,         
-                                -0.5, 0.5, -0.5,        0.0, 1.0, 0.0,         
-                                0.5, 0.5, 0.5,          0.0, 1.0, 0.0,         
-                                0.5, 0.5, 0.5,          0.0, 1.0, 0.0,         
-                                -0.5, 0.5, -0.5,        0.0, 1.0, 0.0,         
-                                -0.5, 0.5, 0.5,         0.0, 1.0, 0.0,         
-                                
-                                -0.5, 0.5, -0.5,        -1.0, 0.0, 0.0,        
-                                -0.5, -0.5, -0.5,       -1.0, 0.0, 0.0,        
-                                -0.5, 0.5, 0.5,         -1.0, 0.0, 0.0,        
-                                -0.5, 0.5, 0.5,         -1.0, 0.0, 0.0,        
-                                -0.5, -0.5, -0.5,       -1.0, 0.0, 0.0,        
-                                -0.5, -0.5, 0.5,        -1.0, 0.0, 0.0,        
-                                
-                                -0.5, -0.5, -0.5,       0.0, -1.0, 0.0,        
-                                0.5, -0.5, -0.5,        0.0, -1.0, 0.0,        
-                                -0.5, -0.5, 0.5,        0.0, -1.0, 0.0,        
-                                -0.5, -0.5, 0.5,        0.0, -1.0, 0.0,        
-                                0.5, -0.5, -0.5,        0.0, -1.0, 0.0,        
-                                0.5, -0.5, 0.5,         0.0, -1.0, 0.0,        
-                                
-                                0.5, 0.5, 0.5,          0.0, 0.0, 1.0,         
-                                -0.5, 0.5, 0.5,         0.0, 0.0, 1.0,         
-                                0.5, -0.5, 0.5,         0.0, 0.0, 1.0,         
-                                0.5, -0.5, 0.5,         0.0, 0.0, 1.0,         
-                                -0.5, 0.5, 0.5,         0.0, 0.0, 1.0,         
-                                -0.5, -0.5, 0.5,        0.0, 0.0, 1.0,         
-                                
-                                0.5, -0.5, -0.5,        0.0, 0.0, -1.0,        
-                                -0.5, -0.5, -0.5,       0.0, 0.0, -1.0,        
-                                0.5, 0.5, -0.5,         0.0, 0.0, -1.0,        
-                                0.5, 0.5, -0.5,         0.0, 0.0, -1.0,        
-                                -0.5, -0.5, -0.5,       0.0, 0.0, -1.0,        
-                                -0.5, 0.5, -0.5,        0.0, 0.0, -1.0*/
-    
-]
+var drawvertices: [GLfloat] = [ ]
 
 var drawnormals: [GLfloat] = [0.0]
 var rotation:GLfloat = 0.0
@@ -132,6 +90,8 @@ class GameViewController: GLKViewController {
     var myModelViewProjectionMatrix:GLKMatrix4 = GLKMatrix4Identity
     var mynormalMatrix: GLKMatrix3 = GLKMatrix3Identity
     
+    var myTexUniform: GLint = 0
+    var myTexture: GLuint = 0
     
     var myViewPortWidth:GLsizei = -1
     var myViewPortHeight:GLsizei = -1
@@ -193,7 +153,7 @@ class GameViewController: GLKViewController {
     var myTranslateMatCam: [GLfloat] = [1.0, 0.0, 0.0, 0.0,
                                         0.0, 1.0, 0.0, 0.0,
                                         0.0, 0.0, 1.0, 0.0,
-                                        0.0, 0.0, 0.0, 1.0]
+                                        0.0, -10.0, 0.0, 1.0]
     var myScaleMatCam: [GLfloat] = [1.0, 0.0, 0.0, 0.0,
                                     0.0, 1.0, 0.0, 0.0,
                                     0.0, 0.0, 1.0, 0.0,
@@ -486,6 +446,33 @@ class GameViewController: GLKViewController {
     } // end of didReceiveMemoryWarning()
     
     
+    // BEGIN TEXTURE
+    func loadTexture(filename: String) {
+        let image: CGImage? = UIImage(named: filename)?.cgImage
+        
+        let width: Int = image!.width
+        let height: Int = image!.height
+        let imageData = calloc(Int(CGFloat(width) * CGFloat(height) * 4), Int(MemoryLayout<GLubyte>.size))
+        
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let imageContext: CGContext = CGContext(data: imageData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width*4, space: image!.colorSpace!, bitmapInfo: bitmapInfo.rawValue)!
+        
+        let rect = CGRect(x: 0, y: 0, width: CGFloat(width) , height: CGFloat(height))
+        
+        imageContext.draw(image!, in: rect, byTiling:false)
+        
+        // Generate textures
+        glGenTextures(1, &myTexture)
+        // Bind it
+        glBindTexture(GLenum(GL_TEXTURE_2D), myTexture)
+        
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_NEAREST)
+        glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, GLsizei(width), GLsizei(height), 0, GLenum(GL_RGBA), UInt32(GL_UNSIGNED_BYTE), imageData)
+        
+        free(imageData)
+    }
+    // END TEXTURE
+    
     // ------------------------------------------------------------------------
     // initialize OpenGL ES:
     // ------------------------------------------------------------------------
@@ -532,17 +519,8 @@ class GameViewController: GLKViewController {
                      GLenum(GL_STATIC_DRAW))
         
         // enable which kind of attributes the buffer data is going to use:
-        glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
-        
-        // now call glVertexAttribPointer() to specify the location and data format
-        //   of the array of generic vertex attributes at index,
-        //   to be used at rendering time, when glDrawArrays() is going to be called.
-        //
-        // public func glVertexAttribPointer(indx: GLuint, _ size: GLint,
-        //   _ type: GLenum, _ normalized: GLboolean,
-        //   _ stride: GLsizei, _ ptr: UnsafePointer<Void>)
-        // see https://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml
-        glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue),
+       /* glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
+       glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue),
                               3, GLenum(GL_FLOAT), GLboolean(GL_FALSE),
                               32, obtainUnsafePointer(0) )
         glEnableVertexAttribArray(GLuint(GLKVertexAttrib.texCoord0.rawValue))
@@ -550,13 +528,24 @@ class GameViewController: GLKViewController {
                               2, GLenum(GL_FLOAT), GLboolean(GL_FALSE),
                               32, obtainUnsafePointer(12) )
         glEnableVertexAttribArray(GLuint(GLKVertexAttrib.normal.rawValue))
-         glVertexAttribPointer(GLuint(GLKVertexAttrib.normal.rawValue), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 32, obtainUnsafePointer(20))
-        /* glEnableVertexAttribArray(GLuint(GLKVertexAttrib.color.rawValue
-         glVertexAttribPointer(GLuint(GLKVertexAttrib.color.rawValue), 4, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 40, obtainUnsafePointer(24))*/
+         glVertexAttribPointer(GLuint(GLKVertexAttrib.normal.rawValue), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 32, obtainUnsafePointer(20))*/
+        
+        // BEGIN TEXTURE
+        glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
+        glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 32, obtainUnsafePointer(0))
+        glEnableVertexAttribArray(GLuint(GLKVertexAttrib.texCoord0.rawValue))
+        glVertexAttribPointer(GLuint(GLKVertexAttrib.texCoord0.rawValue), 2, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 32, obtainUnsafePointer(12))
+        glEnableVertexAttribArray(GLuint(GLKVertexAttrib.normal.rawValue))
+        glVertexAttribPointer(GLuint(GLKVertexAttrib.normal.rawValue), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 32, obtainUnsafePointer(20))
+        // END TEXTURE
         
         // now "break" the vertex array binding:
         glBindVertexArray(0)
         
+        // BEGIN TEXTURE
+        loadTexture(filename: "truck_color-blue.jpg")
+        // END TEXTURE
+
         // glViewport(x: GLint, _ y: GLint, _ width: GLsizei, _ height: GLsizei)
         self.myViewPortWidth = GLsizei(self.view.bounds.size.width)
         self.myViewPortHeight = GLsizei(self.view.bounds.size.height)
@@ -729,6 +718,12 @@ class GameViewController: GLKViewController {
         glUniform1f(self.myNearUniform,GLfloat(myNear))
         glUniform1f(self.myFarUniform,GLfloat(myFar))
         
+        // BEGIN TEXTURE
+        glActiveTexture(GLenum(GL_TEXTURE0));
+        glBindTexture(GLenum(GL_TEXTURE_2D), myTexture);
+        glUniform1i(myTexUniform, 0);
+        // END TEXTURE
+        
         // SOLUTION: don't change the gVertexData array in the drawing function!
         glEnable(GLenum(GL_DEPTH_TEST))
         if (bottomSelection == 2)
@@ -792,25 +787,13 @@ class GameViewController: GLKViewController {
     func loadObj()
     {
         var f_count = 0
-        //NSURL file = NS
-        
-        // let someText = NSString(string:"some text")
-        // let destinationPath = "Avent.obj"
-        //var file = NSFileManager
-        
-        /*let location = NSString(string:"./Users/vinitaboolchandani/Desktop/MS/Graphics/Avent.obj").expandingTildeInPath
-         let fileContent = try? NSString(contentsOfFile: location, encoding: String.Encoding.utf8.rawValue)
-         
-         NSLog("contents:\(fileContent)")
-         var comp: [String] = (fileContent?.components(separatedBy: "\n"))!
-         */
         drawvertices.removeAll()
         faces.removeAll()
         normals.removeAll()
         vertices.removeAll()
         drawnormals.removeAll()
         texture.removeAll()
-        let filePath = Bundle.main.path(forResource: "Avent", ofType:"obj")
+        let filePath = Bundle.main.path(forResource: "L200-OBJ", ofType:"obj")
         do {
             let input_data = try String(contentsOfFile: filePath!, encoding: String.Encoding.utf8);
             //NSLog("\(input_data)")
@@ -924,7 +907,7 @@ class GameViewController: GLKViewController {
             index = (Int(faces[i]))-1
             if index == -1 {
                 index += 1
-             let drawtexture = [texture[Int(index*2)], texture[Int(index*2)+1]]
+             let drawtexture = [texture[0], texture[0]]
             //drawnormals += drawnormal
             drawvertices += drawtexture
             }
@@ -1315,8 +1298,10 @@ class GameViewController: GLKViewController {
                              GLuint(GLKVertexAttrib.position.rawValue),
                              "a_Position")
         glBindAttribLocation(myGLESProgram, GLuint(GLKVertexAttrib.normal.rawValue), "normal")
-        glBindAttribLocation(myGLESProgram, GLuint(GLKVertexAttrib.texCoord0.rawValue), "texture")
-        //glBindAttribLocation(myGLESProgram, GLuint(GLKVertexAttrib.texCoord1.rawValue), "color")
+        //glBindAttribLocation(myGLESProgram, GLuint(GLKVertexAttrib.texCoord0.rawValue), "texture")
+        // BEGIN TEXTURE
+        glBindAttribLocation(myGLESProgram, GLuint(GLKVertexAttrib.texCoord0.rawValue), "texCoord")
+        // END TEXTURE//glBindAttribLocation(myGLESProgram, GLuint(GLKVertexAttrib.texCoord1.rawValue), "color")
         // Link GPU program:
         if !self.linkProgram(myGLESProgram) {
             NSLog("Failed to link program: \(myGLESProgram)")
@@ -1339,7 +1324,7 @@ class GameViewController: GLKViewController {
         // Get location of uniform variables in the shaders:
         self.myWidthUniform = glGetUniformLocation(myGLESProgram, "u_Width")
         self.myHeightUniform = glGetUniformLocation(myGLESProgram, "u_Height")
-        //self.myColorUniform = glGetUniformLocation(myGLESProgram, "u_Color")
+        self.myColorUniform = glGetUniformLocation(myGLESProgram, "u_Color")
         self.myFoVUniform = glGetUniformLocation(myGLESProgram, "u_FoV")
         self.myAspectUniform = glGetUniformLocation(myGLESProgram, "u_Aspect")
         self.myNearUniform = glGetUniformLocation(myGLESProgram, "u_Near")
@@ -1347,6 +1332,9 @@ class GameViewController: GLKViewController {
         self.myMat4Uniform = glGetUniformLocation(myGLESProgram, "u_Mat4")
         self.myMat4ViewUniform = glGetUniformLocation(myGLESProgram, "u_Mat4View")
         uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(myGLESProgram, "normalMatrix")
+        // BEGIN TEXTURE
+        myTexUniform = glGetUniformLocation(myGLESProgram, "textureUniform")
+        // END TEXTURE
         // Release vertex and fragment shaders.
         if vertShader != 0 {
             glDetachShader(myGLESProgram, vertShader)
